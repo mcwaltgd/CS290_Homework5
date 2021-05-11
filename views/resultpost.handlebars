@@ -1,0 +1,18 @@
+<h1>POST Request Received</h1>
+<h1>You sent the following data in a POST request:</h1>
+{{#if dataInput.length}}
+<ul>
+  <h3>Via Query String</h3>
+  {{#each dataInput}}
+  <li>{{this.name}}: {{this.value}}
+    {{/each}}
+</ul>
+{{/if}}
+<br> {{#if bodyInput.length}}>
+<ul>
+  <h3>Via Body</h3>
+  {{#each bodyInput}}
+  <li>{{this.name}}: {{this.value}}
+    {{/each}}
+</ul>
+{{/if}}
