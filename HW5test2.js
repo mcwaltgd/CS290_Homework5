@@ -1,48 +1,49 @@
+/* HW5 - CS290 GET_POST exercise.
+mcwalteg: Wally McWalter*/
+
+
 var express = require('express');
 
 var app = express();
 var handlebars = require('express-handlebars').create({ defaultLayout: 'main' });
 
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
+app.set('port', 31205);
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.engine('handlebars', handlebars.engine);
-app.set('view engine', 'handlebars');
-app.set('port', 7897);
+// resultget contains the handlebars output format. Get request as per get-loopback-improved in video
 
-app.get('/', function (req, res) {
-    var listToSend = [];
+app.get('/resultget', function (req, res) {
+    var getList = [];
     for (var p in req.query) {
-        listToSend.push({ 'name': p, 'value': req.query[p] });
+        getList.push({ 'name': p, 'value': req.query[p] })
     }
-    // array now has all name value pairs from the query string in objects
     var context = {};
-    context.queryList = listToSend;
-    context.type = "GET"; // Display GET at the top of the page
-    res.render('result', context)
+    context.dataList = getList;
+    res.render('resultget', context)
 });
 
-app.post('/', function (req, res) {
-    var queryStringList = [];
+app.post('/resultpost', function (req, res) {
+    // for data sent in query string
+    var postquery = [];
     for (var p in req.query) {
-        queryStringList.push({ 'name': p, 'value': req.query[p] });
+        postquery.push({ 'name': p, 'value': req.query[p] });
     }
+    // for data sent in body
 
-    // queryStringList has any data that happened to come through in the URL query string
-
-    var bodyList = [];
+    var bodydata = [];
     for (var p in req.body) {
-        bodyList.push({ 'name': p, 'value': req.body[p] });
+        bodydata.push({ 'name': p, 'value': req.body[p] });
     }
-
-    // bodyList has all data sent through in the request body
-
     var context = {};
-    context.queryList = queryStringList;
-    context.bodyList = bodyList;
-    context.type = "POST";
-    res.render('result', context);
+    context.bodyInput = bodydata;
+    context.dataInput = postquery;
+
+    res.render('resultpost', context);
 });
 
 app.use(function (req, res) {
